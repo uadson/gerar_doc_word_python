@@ -1,5 +1,5 @@
 # gerar_doc_word_python
-Script simples para gerar arquivos do tipo .docx com Python
+Script simples para manipular / gerar arquivos do tipo .docx com Python
 
 Neste script tentei elaborar de modo simples e, conforme meu nível de conhecimento, uma modelo pra automatizar pelo menos em parte, a elaboração de documentos.
 Em alguns departamentos e principalmente em órgãos públicos, ainda há uso de documentos impressos e a elaboração dos mesmos é de modo maçante e óbviamente é uma tarefa repetitiva. Como isso faz parte do meu cotidiano, resolvi elaborar um script que pudesse me auxiliar de forma rápida, prática e eficiente nessas tarefas.
