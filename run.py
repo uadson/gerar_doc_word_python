@@ -97,7 +97,16 @@ texto = '\n'.join(fullText)
 
 
 # 10. Solicitando o número do documento ao usuário
-num_doc = int(input('Informe o número do documento: '))
+while True:
+	try:
+		num_doc = int(input('Informe o número do documento: '))
+	except ValueError:
+		print('\nDigite um número válido!')
+	else:
+		if num_doc:
+			break
+
+			
 assunto = input('Informe o Assunto: ').upper().strip()
 
 
