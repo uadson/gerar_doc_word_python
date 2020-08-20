@@ -4,6 +4,7 @@ from xlrd import open_workbook
 import os
 import shutil
 from datetime import date
+from datetime import datetime
 from templates import *
 from time import sleep
 
@@ -31,6 +32,8 @@ mes = date.today().month
 ano = date.today().year
 data = date.today()
 data_atual = data.strftime('%d%m%y')
+hora = datetime.now()
+hora_atual = hora.strftime('%H%M')
 
 
 meses = {
@@ -49,13 +52,20 @@ meses = {
 }
 
 
-# 4. Lendo os dados da planilha(coluna e celula)
+# 4. Tipos de Documentos
+tipo_doc = {
+	1: 'TIPO DE DOC 1',
+	2: 'TIPO DE DOC 2'
+}
+
+
+# 5. Lendo os dados da planilha(coluna e celula)
 planilha = open_workbook(DB)
 plan = planilha.sheet_by_index(0)
 col_valor = plan.col_values(0)
 
 
-# 5. Criando uma lista com os dados coletados da planilha
+# 6. Criando uma lista com os dados coletados da planilha
 protocolo = []
 i = 0 
 for celula in col_valor[1:]:
@@ -65,11 +75,11 @@ for celula in col_valor[1:]:
         i += 1
 
 
-# 6. Obtendo o valor total de itens adicionados à lista
+# 7. Obtendo o valor total de itens adicionados à lista
 total = len(protocolo)
 
 
-# 7. Obtendo uma lista dos documentos presentes no diretório de templates cujo o inicio 
+# 8. Obtendo uma lista dos documentos presentes no diretório de templates cujo o inicio 
 # do nome de cada arquivo seja 'doc' e adicionando a um dicionário.
 lista = os.listdir(TEMP_PATH)
 docs = {}
@@ -80,15 +90,25 @@ for temp in lista:
 	k += 1
 		
 
-# 8. Selecionando o template que será utilizado para gerar os documentos.
+# 9. Selecionando o template que será utilizado para gerar os documentos.
 # imprimindo as opções na tela
 for k, v in docs.items():
 	print(f'[{k}] - {v}')
 
-template = int(input('\nSelecione um documento: '))
+
+while True:
+	try:
+		template = int(input('\nSelecione um documento: '))
+	except ValueError:
+		print('Digite um número válido!')
+	else:
+		if template > len(docs) or template <= 0:
+			print('Documento inexistente.')
+		else:
+			break
 
 
-# 9. Obtendo uma lista com as linhas do texto que será inserido no documento
+# 10. Obtendo uma lista com as linhas do texto que será inserido no documento
 doc2 = Document(f'{os.getcwd()}' + f'\\templates\\{docs.get(template)}')    
 fullText = []
 for linha in doc2.paragraphs:
@@ -96,7 +116,24 @@ for linha in doc2.paragraphs:
 texto = '\n'.join(fullText)
 
 
-# 10. Solicitando o número do documento ao usuário
+# 11. Selecionando o tipo de documento
+for k, v in tipo_doc.items():
+	print(f'[{k}] - {v}')
+
+
+while True:	
+	try:
+		tipoDoc = int(input('\nSelecione o tipo de documento: '))
+	except ValueError:
+		print('Digite um número válido!')
+	else:
+		if tipoDoc > len(tipo_doc) or tipoDoc <= 0:
+			print('Documento inexistente.')
+		else:
+			break
+
+
+# 12. Solicitando o número do documento ao usuário
 while True:
 	try:
 		num_doc = int(input('Informe o número do documento: '))
@@ -110,7 +147,7 @@ while True:
 assunto = input('Informe o Assunto: ').upper().strip()
 
 
-# 11. Gerando documentos 
+# 13. Gerando documentos 
 for i in range(total):
 	# acessando um arquivo modelo para a partir dele criar outros documentos
 	doc1 = Document(f'{os.getcwd()}' + '\\modelos\\modelo.docx')
@@ -153,12 +190,12 @@ for i in range(total):
 	doc1.add_paragraph('Inscrição no Conselho, etc')
 	# salvando documento
 	# esse formato fica a livre escolha
-	doc1.save(f'doc - {protocolo[i]}{data_atual}.docx')
+	doc1.save(f'doc - {protocolo[i]}{hora_atual}.docx')
 	# incrementação do numéro de documento	
 	num_doc += 1
 
 
-# 12. Aguardando 2 segundos para início de processamento
+# 14. Aguardando 2 segundos para início de processamento
 sleep(2)
 # aqui optei por colocar dois segundos de espera pois, os arquivos
 # são gerados primeiramente para o diretório principal e depois
@@ -166,7 +203,7 @@ sleep(2)
 # não ficasse cheio de arquivos.
 
 
-# 13. Movendo os documentos gerados para pasta doc_emitidos
+# 15. Movendo os documentos gerados para pasta doc_emitidos
 docs = os.listdir(MAIN_PATH)
 for doc in docs:
 	if doc.startswith('doc'):
