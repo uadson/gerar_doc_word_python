@@ -14,15 +14,20 @@ from time import sleep
 DB = 'db.xlsx'
 
 
-# 2.2 Caminho dos templates
+# 2.2 Arquivo de texto contendo os números que serão inseridos
+# nos documentos
+arq = 'num.txt'
+
+
+# 2.3 Caminho dos templates
 TEMP_PATH = f'{os.getcwd()}' + '\\templates'
 
 
-# 2.3 Caminho dos documentos
+# 2.4 Caminho dos documentos
 DOC_PATH = f'{os.getcwd()}' + '\\doc_emitidos'
 
 
-# 2.4 Caminho do diretório principal
+# 2.5 Caminho do diretório principal
 MAIN_PATH = f'{os.getcwd()}'
 
 
@@ -133,26 +138,33 @@ while True:
 			break
 
 
-# 12. Solicitando o número do documento ao usuário
-while True:
-	try:
-		num_doc = int(input('Informe o número do documento: '))
-	except ValueError:
-		print('\nDigite um número válido!')
-	else:
-		if num_doc:
-			break
+# 12. Inserindo um número ao documento
+# abrindo arquivo em modo leitura
+file = open(arq, 'r')
+# uma variável receberá cada linha do arquivo convertida para o tipo inteiro
+for f in file:
+	a = int(f)
+# fechando o arquivo	
+file.close()
 
-			
+
+# 12.1 Informando um assunto para o documento			
 assunto = input('Informe o Assunto: ').upper().strip()
 
 
 # 13. Gerando documentos 
 for i in range(total):
+	# abrindo arquivo em modo r+ para que o conteúdo seja inserido
+	# sempre na primeira linha 
+	file = open(arq, 'r+')
+	# indicando que o registro será feito na primeira linha
+	file.seek(0)
+	# escrevendo no arquivo
+	file.write(str(a))
 	# acessando um arquivo modelo para a partir dele criar outros documentos
 	doc1 = Document(f'{os.getcwd()}' + '\\modelos\\modelo.docx')
 	# adiciona o primeiro parágrafo
-	doc1.add_paragraph(f'DOCUMENTO  N. :  {num_doc} / {ano}')
+	doc1.add_paragraph(f'DOCUMENTO  N. :  {a} / {ano}')
 	# adiciona uma linha branco
 	doc1.add_paragraph('')
 	# adicion o terceiro parágrafo
@@ -192,7 +204,10 @@ for i in range(total):
 	# esse formato fica a livre escolha
 	doc1.save(f'doc - {protocolo[i]}{hora_atual}.docx')
 	# incrementação do numéro de documento	
-	num_doc += 1
+	a += 1
+
+	# fechando o arquivo
+	file.close()
 
 
 # 14. Aguardando 2 segundos para início de processamento
