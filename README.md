@@ -2,7 +2,7 @@
 Script simples para manipular / gerar arquivos do tipo .docx com Python
 
 Neste script tentei elaborar de modo simples e, conforme meu nível de conhecimento, um modelo para automatizar pelo menos em parte, a elaboração de documentos.
-Em alguns departamentos e principalmente em órgãos públicos, ainda há uso de documentos impressos e a elaboração dos mesmos em muitos se torna uma tarefa repetitiva. Como isso faz parte do meu cotidiano, resolvi elaborar um script que pudesse me auxiliar de forma rápida, prática e eficiente nessas tarefas.
+Em alguns departamentos e principalmente em órgãos públicos, ainda há uso de documentos impressos e a elaboração dos mesmos em muitos se torna uma tarefa repetitiva. Resolvi elaborar um script que pudesse auxiliar de forma rápida, prática e eficiente nessas tarefas que geralmente repetitivas.
 
 O Python é uma linguagem poderosa, com múltiplos recursos e que auxilia de modo eficiente na automatização destas tarefas repetitivas do dia-a-dia.
 
