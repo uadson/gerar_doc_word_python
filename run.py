@@ -57,20 +57,36 @@ meses = {
 }
 
 
-# 4. Tipos de Documentos
+
+# 4 Criando uma lista com os arquivos do diretório
+files = os.listdir(MAIN_PATH)
+# variável que receberá um valor de um elemento pertecente a lista files
+file = f'{data_atual}' in files
+# verificação da existência desse elemento na lista files
+if file == True:
+	new_folder_day = file
+else:
+	new_folder_day = os.mkdir(data_atual)
+
+
+# 4.1 Criando caminho da nova pasta
+DATE_PATH = f'{MAIN_PATH}' + f'\\{data_atual}'
+
+
+# 5. Tipos de Documentos
 tipo_doc = {
 	1: 'TIPO DE DOC 1',
 	2: 'TIPO DE DOC 2'
 }
 
 
-# 5. Lendo os dados da planilha(coluna e celula)
+# 6. Lendo os dados da planilha(coluna e celula)
 planilha = open_workbook(DB)
 plan = planilha.sheet_by_index(0)
 col_valor = plan.col_values(0)
 
 
-# 6. Criando uma lista com os dados coletados da planilha
+# 7. Criando uma lista com os dados coletados da planilha
 protocolo = []
 i = 0 
 for celula in col_valor[1:]:
@@ -80,11 +96,11 @@ for celula in col_valor[1:]:
         i += 1
 
 
-# 7. Obtendo o valor total de itens adicionados à lista
+# 8. Obtendo o valor total de itens adicionados à lista
 total = len(protocolo)
 
 
-# 8. Obtendo uma lista dos documentos presentes no diretório de templates cujo o inicio 
+# 9. Obtendo uma lista dos documentos presentes no diretório de templates cujo o inicio 
 # do nome de cada arquivo seja 'doc' e adicionando a um dicionário.
 lista = os.listdir(TEMP_PATH)
 docs = {}
@@ -95,7 +111,7 @@ for temp in lista:
 	k += 1
 		
 
-# 9. Selecionando o template que será utilizado para gerar os documentos.
+# 10. Selecionando o template que será utilizado para gerar os documentos.
 # imprimindo as opções na tela
 for k, v in docs.items():
 	print(f'[{k}] - {v}')
@@ -113,7 +129,7 @@ while True:
 			break
 
 
-# 10. Obtendo uma lista com as linhas do texto que será inserido no documento
+# 11. Obtendo uma lista com as linhas do texto que será inserido no documento
 doc2 = Document(f'{os.getcwd()}' + f'\\templates\\{docs.get(template)}')    
 fullText = []
 for linha in doc2.paragraphs:
@@ -121,7 +137,7 @@ for linha in doc2.paragraphs:
 texto = '\n'.join(fullText)
 
 
-# 11. Selecionando o tipo de documento
+# 12. Selecionando o tipo de documento
 for k, v in tipo_doc.items():
 	print(f'[{k}] - {v}')
 
@@ -138,7 +154,7 @@ while True:
 			break
 
 
-# 12. Inserindo um número ao documento
+# 13. Inserindo um número ao documento
 # abrindo arquivo em modo leitura
 file = open(arq, 'r')
 # uma variável receberá cada linha do arquivo convertida para o tipo inteiro
@@ -148,11 +164,11 @@ for f in file:
 file.close()
 
 
-# 12.1 Informando um assunto para o documento			
+# 13.1 Informando um assunto para o documento			
 assunto = input('Informe o Assunto: ').upper().strip()
 
 
-# 13. Gerando documentos 
+# 14. Gerando documentos 
 for i in range(total):
 	# abrindo arquivo em modo r+ para que o conteúdo seja inserido
 	# sempre na primeira linha 
@@ -210,18 +226,34 @@ for i in range(total):
 	file.close()
 
 
-# 14. Aguardando 2 segundos para início de processamento
-sleep(2)
-# aqui optei por colocar dois segundos de espera pois, os arquivos
-# são gerados primeiramente para o diretório principal e depois
-# escolhir movê-los para outra pasta para que o diretório principal
-# não ficasse cheio de arquivos.
+# 15. Organizando os arquivos
+# Primeiro vamos movers os arquivos .docx para a pasta como nome relacionado 
+# ao hora atual
+# Criando pasta com nome referente ao horário, e que receberá os arquivos
+# gerados.
+new_folder_hour = os.mkdir(hora_atual)
 
 
-# 15. Movendo os documentos gerados para pasta doc_emitidos
+# 15.1 Criando caminho da nova pasta
+HOUR_PATH = f'{MAIN_PATH}' + f'\\{hora_atual}'
+# movendo arquivos
 docs = os.listdir(MAIN_PATH)
 for doc in docs:
-	if doc.startswith('doc'):
+	if doc.startswith('doc -'):
+		shutil.move(doc, HOUR_PATH)
+
+
+# 16. Movendo a pasta cujo o nome é a hora atualizada para pasta com nome da data atual
+docs = os.listdir(MAIN_PATH)
+for doc in docs:
+	if doc.startswith(hora_atual):
+		shutil.move(doc, DATE_PATH)
+
+
+# 17. Movendo a pasta com o nome da data para a pasta de documentos emitidos
+docs = os.listdir(MAIN_PATH)
+for doc in docs:
+	if doc.startswith(data_atual):
 		shutil.move(doc, DOC_PATH)
 
 
