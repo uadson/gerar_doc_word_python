@@ -59,18 +59,18 @@ meses = {
 
 
 # 4 Criando uma lista com os arquivos do diretório
-files = os.listdir(MAIN_PATH)
+files = os.listdir(DOC_PATH)
 # variável que receberá um valor de um elemento pertecente a lista files
 file = f'{data_atual}' in files
 # verificação da existência desse elemento na lista files
 if file == True:
 	new_folder_day = file
 else:
-	new_folder_day = os.mkdir(data_atual)
+	new_folder_day = os.mkdir(f'{DOC_PATH}' + f'\\{data_atual}')
 
 
 # 4.1 Criando caminho da nova pasta
-DATE_PATH = f'{MAIN_PATH}' + f'\\{data_atual}'
+DATE_PATH = f'{DOC_PATH}' + f'\\{data_atual}'
 
 
 # 5. Tipos de Documentos
@@ -248,36 +248,3 @@ docs = os.listdir(MAIN_PATH)
 for doc in docs:
 	if doc.startswith(hora_atual):
 		shutil.move(doc, DATE_PATH)
-
-
-# 17. Movendo a pasta com o nome da data para a pasta de documentos emitidos
-docs = os.listdir(MAIN_PATH)
-for doc in docs:
-	if doc.startswith(data_atual):
-		shutil.move(doc, DOC_PATH)
-
-
-# OBS.: caso tem mais de um modelo de documento, pode-se usar 
-# o mesmo procedimento usado para obter a lista de templates
-
-''' Exemplo:
-
-lista = os.listdir(MODELOS_PATH)
-docs = {}
-k = 1
-for modelo in lista:
-	if modelo.startswith('modelo'):
-		docs[k] = modelo
-	k += 1
-'''
-
-# E depois listar os modelos do diretório para escolha
-
-''' Exemplo:
-
-for k, v in docs.items():
-	print(f'[{k}] - {v}')
-
-modelos = int(input('\nSelecione um modelo: '))
-'''
-	
