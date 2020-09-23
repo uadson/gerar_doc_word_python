@@ -159,7 +159,7 @@ while True:
 file = open(arq, 'r')
 # uma variável receberá cada linha do arquivo convertida para o tipo inteiro
 for f in file:
-	a = int(f)
+	a = int(f) + 1
 # fechando o arquivo	
 file.close()
 
