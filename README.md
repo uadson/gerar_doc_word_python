@@ -1,4 +1,4 @@
-# Gerar e Manipular Documentos Word com Python
+# Gerar e Manipular Arquivos Word com Python
 Script simples para manipular / gerar arquivos do tipo .docx com Python
 
 Neste script tentei elaborar de modo simples e, conforme meu nível de conhecimento, um modelo para automatizar pelo menos em parte, a elaboração de documentos.
