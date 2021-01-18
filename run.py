@@ -1,35 +1,31 @@
 # 1. Importando as bibliotecas necessárias para execução do projeto
-from docx import Document
-from xlrd import open_workbook
 import os
 import shutil
-from datetime import date
-from datetime import datetime
-from templates import *
+from datetime import datetime, date
 from time import sleep
+
+from docx import Document
+from openpyxl import load_workbook
+
+from templates import *
 
 
 # 2. Caminho dos diretórios
 # 2.1 Planilha que será usada como base de dados
 DB = 'db.xlsx'
 
-
 # 2.2 Arquivo de texto contendo os números que serão inseridos
 # nos documentos
 arq = 'num.txt'
 
-
-# 2.3 Caminho dos templates
-TEMP_PATH = f'{os.getcwd()}' + '\\templates'
-
-
-# 2.4 Caminho dos documentos
-DOC_PATH = f'{os.getcwd()}' + '\\doc_emitidos'
-
-
-# 2.5 Caminho do diretório principal
+# 2.3 Caminho do diretório principal
 MAIN_PATH = f'{os.getcwd()}'
 
+# 2.4 Caminho dos templates
+TEMP_PATH = os.path.join(MAIN_PATH, 'templates')
+
+# 2.5 Caminho dos documentos
+DOC_PATH = os.path.join(MAIN_PATH, 'doc_emitidos')
 
 # 3. Formatando a data
 dia = date.today().day
@@ -39,7 +35,6 @@ data = date.today()
 data_atual = data.strftime('%d%m%y')
 hora = datetime.now()
 hora_atual = hora.strftime('%H%M')
-
 
 meses = {
 	1: 'janeiro',
@@ -56,22 +51,27 @@ meses = {
    12: 'dezembro'
 }
 
-
-
 # 4 Criando uma lista com os arquivos do diretório
 files = os.listdir(DOC_PATH)
 # variável que receberá um valor de um elemento pertecente a lista files
-file = f'{data_atual}' in files
+file = f'{ano}' in files
 # verificação da existência desse elemento na lista files
 if file == True:
-	new_folder_day = file
+	new_folder = file
 else:
-	new_folder_day = os.mkdir(f'{DOC_PATH}' + f'\\{data_atual}')
-
+	new_folder = os.mkdir(f'{DOC_PATH}' + f'\\{ano}')
 
 # 4.1 Criando caminho da nova pasta
-DATE_PATH = f'{DOC_PATH}' + f'\\{data_atual}'
+FOLDER_PATH = os.path.join(DOC_PATH, f'{ano}')
 
+files = os.listdir(FOLDER_PATH)
+file = f'{ano}{mes}' in files
+if file == True:
+	new_folder = file
+else:
+	new_folder = os.mkdir(f'{FOLDER_PATH}' + f'\\{ano}{mes}')
+
+FINAL_PATH = os.path.join(FOLDER_PATH, f'{ano}{mes}')
 
 # 5. Tipos de Documentos
 tipo_doc = {
@@ -79,22 +79,18 @@ tipo_doc = {
 	2: 'TIPO DE DOC 2'
 }
 
-
 # 6. Lendo os dados da planilha(coluna e celula)
-planilha = open_workbook(DB)
-plan = planilha.sheet_by_index(0)
-col_valor = plan.col_values(0)
-
+planilha = load_workbook(DB)
+plan = planilha['processos']
 
 # 7. Criando uma lista com os dados coletados da planilha
 protocolo = []
 i = 0 
-for celula in col_valor[1:]:
-    if celula != '':
-        num = int(celula)
+for celula in plan['A'][1:15]:
+    if celula.value != '':
+        num = int(celula.value)
         protocolo.append(num)
         i += 1
-
 
 # 8. Obtendo o valor total de itens adicionados à lista
 total = len(protocolo)
@@ -225,26 +221,8 @@ for i in range(total):
 	# fechando o arquivo
 	file.close()
 
-
-# 15. Organizando os arquivos
-# Primeiro vamos movers os arquivos .docx para a pasta como nome relacionado 
-# ao hora atual
-# Criando pasta com nome referente ao horário, e que receberá os arquivos
-# gerados.
-new_folder_hour = os.mkdir(hora_atual)
-
-
-# 15.1 Criando caminho da nova pasta
-HOUR_PATH = f'{MAIN_PATH}' + f'\\{hora_atual}'
-# movendo arquivos
+# 15.1 Movendo arquivos
 docs = os.listdir(MAIN_PATH)
 for doc in docs:
 	if doc.startswith('doc -'):
-		shutil.move(doc, HOUR_PATH)
-
-
-# 16. Movendo a pasta cujo o nome é a hora atualizada para pasta com nome da data atual
-docs = os.listdir(MAIN_PATH)
-for doc in docs:
-	if doc.startswith(hora_atual):
-		shutil.move(doc, DATE_PATH)
+		shutil.move(doc, FINAL_PATH)
