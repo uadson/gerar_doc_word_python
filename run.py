@@ -86,11 +86,9 @@ plan = planilha['processos']
 # 7. Criando uma lista com os dados coletados da planilha
 protocolo = []
 i = 0 
-for celula in plan['A'][1:15]:
-    if celula.value != '':
-        num = int(celula.value)
-        protocolo.append(num)
-        i += 1
+for celula in plan['A'][1:]:
+    if not celula.value == None:
+        protocolo.append(celula.value)
 
 # 8. Obtendo o valor total de itens adicionados à lista
 total = len(protocolo)
