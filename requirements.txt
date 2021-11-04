@@ -1,0 +1,4 @@
+et-xmlfile==1.1.0
+lxml==4.6.3
+openpyxl==3.0.7
+python-docx==0.8.10
