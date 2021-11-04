@@ -61,5 +61,5 @@ um número será solicitado para o que os documentos possuam uma sequência núm
 
 os documentos serão gerados contendo todos os dados coletados e salvos em uma pasta correspondente a data de sua emissão.
 
-=====================================================================================
-[![Build Status](https://app.travis-ci.com/uadson/gerar_doc_word_python.svg?branch=master)](https://app.travis-ci.com/uadson/gerar_doc_word_python)
+=========================================================================
+[![Build Status](https://app.travis-ci.com/uadson/gerar_doc_word_python.svg?branch=master)](https://app.travis-ci.com/uadson/gerar_doc_word_python)	[![Updates](https://pyup.io/repos/github/uadson/gerar_doc_word_python/shield.svg)](https://pyup.io/repos/github/uadson/gerar_doc_word_python/)	[![Python 3](https://pyup.io/repos/github/uadson/gerar_doc_word_python/python-3-shield.svg)](https://pyup.io/repos/github/uadson/gerar_doc_word_python/)
