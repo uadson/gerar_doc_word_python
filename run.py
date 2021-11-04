@@ -1,12 +1,23 @@
 # 1. Importando as bibliotecas necessárias para execução do projeto
+
+# criar e gerenciar diretórios/pastas
 import os
 import shutil
+
+# manipulação e gerenciamento de datas e horários
 from datetime import datetime, date
 from time import sleep
 
+# manipulação de arquivo .docx
 from docx import Document
+
+# manipulação de planilhas do excel ou libre calc
 from openpyxl import load_workbook
 
+# manipulação de strings
+from string import ascii_uppercase as letter_up
+
+# carregando todos os arquivos do diretório templates
 from templates import *
 
 
@@ -26,6 +37,10 @@ TEMP_PATH = os.path.join(MAIN_PATH, 'templates')
 
 # 2.5 Caminho dos documentos
 DOC_PATH = os.path.join(MAIN_PATH, 'doc_emitidos')
+
+# 2.6 Pasta na qual serão incluídos arquivos duplicados
+DOC_DOUBLE = os.path.join(MAIN_PATH, 'doc_duplicados')
+
 
 # 3. Formatando a data
 dia = date.today().day
@@ -51,10 +66,12 @@ meses = {
    12: 'dezembro'
 }
 
+
 # 4 Criando uma lista com os arquivos do diretório
 files = os.listdir(DOC_PATH)
 # variável que receberá um valor de um elemento pertecente a lista files
 file = f'{ano}' in files
+
 # verificação da existência desse elemento na lista files
 if file == True:
 	new_folder = file
@@ -62,36 +79,54 @@ else:
 	new_folder = os.mkdir(f'{DOC_PATH}' + f'\\{ano}')
 
 # 4.1 Criando caminho da nova pasta
-FOLDER_PATH = os.path.join(DOC_PATH, f'{ano}')
+YEAR = os.path.join(DOC_PATH, f'{ano}')
 
-files = os.listdir(FOLDER_PATH)
+# 4.2 Criando um novo diretório para o mês corrente
+files = os.listdir(YEAR)
 file = f'{ano}{mes}' in files
 if file == True:
 	new_folder = file
 else:
-	new_folder = os.mkdir(f'{FOLDER_PATH}' + f'\\{ano}{mes}')
+	new_folder = os.mkdir(f'{YEAR}' + f'\\{ano}{mes}')
 
-FINAL_PATH = os.path.join(FOLDER_PATH, f'{ano}{mes}')
+# 4.3 Criando pasta do mês
+MONTH = os.path.join(YEAR, f'{ano}{mes}')
+
+# 4.4 Criando um novo diretório para o dia atual
+files = os.listdir(MONTH)
+
+file = f'{dia}' in files
+
+if file == True:
+	new_folder = file
+else:
+	new_folder = os.mkdir(f'{MONTH}' + f'\\{dia}')
+
+DAY = os.path.join(MONTH, f'{dia}')
+
 
 # 5. Tipos de Documentos
 tipo_doc = {
-	1: 'TIPO DE DOC 1',
-	2: 'TIPO DE DOC 2'
+	1: 'Exemplo 1',
+	2: 'Exemplo 2',
 }
+
 
 # 6. Lendo os dados da planilha(coluna e celula)
 planilha = load_workbook(DB)
-plan = planilha['processos']
+plan = planilha['dados']
+
 
 # 7. Criando uma lista com os dados coletados da planilha
-protocolo = []
-i = 0 
+dados = []
+dados.clear()
 for celula in plan['A'][1:]:
     if not celula.value == None:
-        protocolo.append(celula.value)
+        dados.append(celula.value)
+
 
 # 8. Obtendo o valor total de itens adicionados à lista
-total = len(protocolo)
+total = len(dados)
 
 
 # 9. Obtendo uma lista dos documentos presentes no diretório de templates cujo o inicio 
@@ -105,10 +140,10 @@ for temp in lista:
 	k += 1
 		
 
-# 10. Selecionando o template que será utilizado para gerar os documentos.
+# 10. Selecionando o template(documento) que será utilizado para gerar os documentos.
 # imprimindo as opções na tela
 for k, v in docs.items():
-	print(f'[{k}] - {v}')
+	print(f'[{k:^2}] - {v}')
 
 
 while True:
@@ -123,7 +158,7 @@ while True:
 			break
 
 
-# 11. Obtendo uma lista com as linhas do texto que será inserido no documento
+# 11. Coletando o contexto do template e acrescentando em uma variável
 doc2 = Document(f'{os.getcwd()}' + f'\\templates\\{docs.get(template)}')    
 fullText = []
 for linha in doc2.paragraphs:
@@ -149,13 +184,13 @@ while True:
 
 
 # 13. Inserindo um número ao documento
-# abrindo arquivo em modo leitura
-file = open(arq, 'r')
-# uma variável receberá cada linha do arquivo convertida para o tipo inteiro
-for f in file:
-	a = int(f) + 1
-# fechando o arquivo	
-file.close()
+while True:
+	try:
+		num = int(input('Número para o documento: '))
+	except ValueError:
+		print('Digite um número válido!')
+	else:
+		break
 
 
 # 13.1 Informando um assunto para o documento			
@@ -164,17 +199,10 @@ assunto = input('Informe o Assunto: ').upper().strip()
 
 # 14. Gerando documentos 
 for i in range(total):
-	# abrindo arquivo em modo r+ para que o conteúdo seja inserido
-	# sempre na primeira linha 
-	file = open(arq, 'r+')
-	# indicando que o registro será feito na primeira linha
-	file.seek(0)
-	# escrevendo no arquivo
-	file.write(str(a))
 	# acessando um arquivo modelo para a partir dele criar outros documentos
 	doc1 = Document(f'{os.getcwd()}' + '\\modelos\\modelo.docx')
 	# adiciona o primeiro parágrafo
-	doc1.add_paragraph(f'DOCUMENTO  N. :  {a} / {ano}')
+	doc1.add_paragraph(f'DOCUMENTO  N. :  {num} / {ano}')
 	# adiciona uma linha branco
 	doc1.add_paragraph('')
 	# adicion o terceiro parágrafo
@@ -182,7 +210,7 @@ for i in range(total):
 	# adiciona uma linha em branco
 	doc1.add_paragraph('')
 	# adiciona o quinto parágrafo
-	doc1.add_paragraph(f'PROTOCOLO        :  {protocolo[i]}')
+	doc1.add_paragraph(f'PROTOCOLO/NOME/etc        :  {dados[i]}')
 	# formatação dos dois primeiros parágrafos escritos
 	doc1.paragraphs[1].runs[0].bold = True
 	doc1.paragraphs[3].runs[0].bold = True
@@ -196,7 +224,7 @@ for i in range(total):
 	doc1.add_paragraph('')
 	doc1.add_paragraph('')
 	# adicionando data
-	doc1.add_paragraph('>>> Aqui pode ser a identificação do órgão/departamento, etc.')
+	doc1.add_paragraph('>>> Ex.: Departamento de Compras.')
 	doc1.add_paragraph(f'>>> Local, ao(s) {dia} dia(s) do mês de {meses.get(mes)} de {ano}.')
 	# adicionando 5 linhas em branco
 	doc1.add_paragraph('')
@@ -208,19 +236,29 @@ for i in range(total):
 	doc1.add_paragraph('>>> Nome do Responsável')
 	# formatando a linha
 	doc1.paragraphs[18].runs[0].bold = True
-	doc1.add_paragraph('>>> Cargo que Ocupa')
+	doc1.add_paragraph('>>> Cargo')
 	doc1.add_paragraph('Inscrição no Conselho, etc')
 	# salvando documento
 	# esse formato fica a livre escolha
-	doc1.save(f'doc - {protocolo[i]}{hora_atual}.docx')
+	doc1.save(f'doc - {dados[i]}{hora_atual}.docx')
 	# incrementação do numéro de documento	
-	a += 1
+	num += 1
 
 	# fechando o arquivo
 	file.close()
 
+
 # 15.1 Movendo arquivos
-docs = os.listdir(MAIN_PATH)
-for doc in docs:
-	if doc.startswith('doc -'):
-		shutil.move(doc, FINAL_PATH)
+try:
+	print('DOCUMENTOS GERADOS COM SUCESSO.')
+	docs = os.listdir(MAIN_PATH)
+	for doc in docs:
+		if doc.startswith('doc -'):
+			shutil.move(doc, DAY)
+except:
+# 15.2 Em caso de documentos duplicados mover arquivos para outra pasta
+	print('DOCUMENTOS JÁ FORAM EMITIDOS.')
+	docs = os.listdir(MAIN_PATH)
+	for doc in docs:
+		if doc.startswith('doc -'):
+			shutil.move(doc, DOC_DOUBLE)
