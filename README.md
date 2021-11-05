@@ -4,6 +4,7 @@
 #### Objetivo:
 	
 Desenvolver um programa que ajude a reduzir o tempo empreendido em uma atividade repetitiva de elaboração de documentos, em que somente dados como data e número do documento são atualizados, enquanto que o seu contexto permanece o mesmo.
+#### Habilidades Python: Listas, Dicionários, Tratamento de Excessões, Manipulação de Strings
 
 
 #### Estrutura:
